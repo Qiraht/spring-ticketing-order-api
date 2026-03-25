@@ -1,10 +1,17 @@
 package com.qiraht.ticket_order.service;
 
-import com.qiraht.ticket_order.dto.request.EventReqDTO;
+import com.qiraht.ticket_order.dto.request.EventRequest;
+import com.qiraht.ticket_order.dto.response.EventResponse;
 import com.qiraht.ticket_order.entity.Event;
+import com.qiraht.ticket_order.exception.NotFoundException;
 import com.qiraht.ticket_order.repository.EventRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -15,7 +22,7 @@ public class EventService {
         this.eventRepository = eventRepository;
     }
 
-    public String createEvent(EventReqDTO request) {
+    public String createEvent(EventRequest request) {
         Event event = Event.builder()
                 .name(request.name())
                 .description(request.description())
@@ -30,5 +37,40 @@ public class EventService {
         eventRepository.save(event);
 
         return event.getId().toString();
+    }
+
+    public List<EventResponse> getAllEvents() {
+        List<Event> events = eventRepository.findAll();
+
+        log.info("Found {} events", events.size());
+
+        return events.stream()
+                .map(event -> new EventResponse(
+                        event.getId().toString(),
+                        event.getName(),
+                        event.getDescription(),
+                        event.getEventDate(),
+                        event.getPrice(),
+                        event.getCapacity(),
+                        event.getAvailable()
+                )).toList();
+    }
+
+    public EventResponse getEventById(String id) {
+        UUID uuid = UUID.fromString(id);
+
+        Event event = eventRepository.findById(uuid).orElseThrow(() -> new NotFoundException("Event with id " + id + " not found"));
+
+        log.info("Event found: {}", event.getId());
+
+        return new EventResponse(
+                event.getId().toString(),
+                event.getName(),
+                event.getDescription(),
+                event.getEventDate(),
+                event.getPrice(),
+                event.getCapacity(),
+                event.getAvailable()
+        );
     }
 }
