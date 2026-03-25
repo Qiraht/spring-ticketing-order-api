@@ -1,0 +1,7 @@
+package com.qiraht.ticket_order.exception;
+
+public class BusinessException extends RuntimeException {
+    public BusinessException(String message) {
+        super(message);
+    }
+}
