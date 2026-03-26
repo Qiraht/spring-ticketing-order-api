@@ -19,7 +19,7 @@ spring:
   liquibase:
     enabled: false # for testing purposes
     change-log: classpath:/db/changelog/db.changelog-master.yaml
-    default-schema: lmsdb
+    default-schema: ticket_db
 
 server:
   port: ${PORT:8080}
