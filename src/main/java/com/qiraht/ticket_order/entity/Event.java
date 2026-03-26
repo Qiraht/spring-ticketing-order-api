@@ -29,6 +29,9 @@ public class Event {
 
     private String description;
 
+    @Column(nullable = false)
+    private String location;
+
     @Column(name = "event_date", nullable = false)
     private LocalDateTime eventDate;
 
@@ -38,8 +41,8 @@ public class Event {
     @Column(nullable = false)
     private Integer capacity;
 
-    @Column(nullable = false)
-    private Integer available;
+    @Column(name = "available",nullable = false)
+    private Integer availableSlot;
 
     @Column(name = "created_at")
     @CreationTimestamp
