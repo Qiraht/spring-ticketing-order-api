@@ -1,6 +1,7 @@
 package com.qiraht.ticket_order.controller;
 
 import com.qiraht.ticket_order.dto.ApiResponse;
+import com.qiraht.ticket_order.dto.request.EventPutRequest;
 import com.qiraht.ticket_order.dto.request.EventRequest;
 import com.qiraht.ticket_order.dto.response.EventResponse;
 import com.qiraht.ticket_order.service.EventService;
@@ -48,6 +49,20 @@ public class EventController {
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<EventResponse>> getEventById(@PathVariable("id") String eventId) {
         EventResponse data = eventService.getEventById(eventId);
+
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK.value(), "success", data));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> updateEvent(@PathVariable("id") String eventId, @RequestBody EventPutRequest request) {
+        String data = eventService.editEventById(eventId, request);
+
+        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK.value(), "success", data));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteEvent(@PathVariable("id") String eventId) {
+        String data = eventService.deleteEventById(eventId);
 
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK.value(), "success", data));
     }
