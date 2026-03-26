@@ -1,8 +1,8 @@
 package com.qiraht.ticket_order.controller;
 
 import com.qiraht.ticket_order.dto.ApiResponse;
+import com.qiraht.ticket_order.dto.request.EventPostRequest;
 import com.qiraht.ticket_order.dto.request.EventPutRequest;
-import com.qiraht.ticket_order.dto.request.EventRequest;
 import com.qiraht.ticket_order.dto.response.EventResponse;
 import com.qiraht.ticket_order.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/events")
+@Tag(name = "Events", description = "Events related endpoint")
 @Validated
 public class EventController {
     private final EventService eventService;
@@ -25,10 +26,9 @@ public class EventController {
     }
 
     @PostMapping
-    @Tag(name = "Events")
     @Operation(summary = "Create Event", description = "Create new Event. Authentication Needed and role 'ADMIN'")
-    public ResponseEntity<ApiResponse<String>> postEvent(@RequestBody EventRequest eventRequest) {
-        String data = eventService.createEvent(eventRequest);
+    public ResponseEntity<ApiResponse<String>> postEvent(@RequestBody EventPostRequest request) {
+        String data = eventService.createEvent(request);
 
         ApiResponse<String> body = ApiResponse.success(
                 HttpStatus.CREATED.value(),

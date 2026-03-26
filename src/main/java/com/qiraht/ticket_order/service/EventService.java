@@ -1,7 +1,7 @@
 package com.qiraht.ticket_order.service;
 
+import com.qiraht.ticket_order.dto.request.EventPostRequest;
 import com.qiraht.ticket_order.dto.request.EventPutRequest;
-import com.qiraht.ticket_order.dto.request.EventRequest;
 import com.qiraht.ticket_order.dto.response.EventResponse;
 import com.qiraht.ticket_order.entity.Event;
 import com.qiraht.ticket_order.exception.NotFoundException;
@@ -22,14 +22,15 @@ public class EventService {
         this.eventRepository = eventRepository;
     }
 
-    public String createEvent(EventRequest request) {
+    public String createEvent(EventPostRequest request) {
         Event event = Event.builder()
                 .name(request.name())
                 .description(request.description())
+                .location(request.location())
                 .price(request.price())
                 .eventDate(request.eventDate())
                 .capacity(request.capacity())
-                .available(request.capacity())
+                .availableSlot(request.capacity())
                 .build();
 
         log.info("Event created: {}", event.getId());
@@ -49,10 +50,11 @@ public class EventService {
                         event.getId().toString(),
                         event.getName(),
                         event.getDescription(),
+                        event.getLocation(),
                         event.getEventDate(),
                         event.getPrice(),
                         event.getCapacity(),
-                        event.getAvailable()
+                        event.getAvailableSlot()
                 )).toList();
     }
 
@@ -67,10 +69,11 @@ public class EventService {
                 event.getId().toString(),
                 event.getName(),
                 event.getDescription(),
+                event.getLocation(),
                 event.getEventDate(),
                 event.getPrice(),
                 event.getCapacity(),
-                event.getAvailable()
+                event.getAvailableSlot()
         );
     }
 
@@ -81,6 +84,7 @@ public class EventService {
 
         event.setName(request.name());
         event.setDescription(request.description());
+        event.setLocation(request.location());
         event.setEventDate(request.eventDate());
         event.setPrice(request.price());
 
