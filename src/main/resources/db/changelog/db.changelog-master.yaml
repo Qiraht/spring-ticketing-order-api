@@ -1,0 +1,3 @@
+databaseChangelog:
+  - include: ## Events Table
+      file: db/changelog/scripts/create_events_table.sql
