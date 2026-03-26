@@ -1,15 +1,15 @@
 package com.qiraht.ticket_order.service;
 
+import com.qiraht.ticket_order.dto.request.EventPutRequest;
 import com.qiraht.ticket_order.dto.request.EventRequest;
 import com.qiraht.ticket_order.dto.response.EventResponse;
 import com.qiraht.ticket_order.entity.Event;
 import com.qiraht.ticket_order.exception.NotFoundException;
 import com.qiraht.ticket_order.repository.EventRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -72,5 +72,30 @@ public class EventService {
                 event.getCapacity(),
                 event.getAvailable()
         );
+    }
+
+    public String editEventById(String id, EventPutRequest request) {
+        UUID uuid = UUID.fromString(id);
+
+        Event event = eventRepository.findById(uuid).orElseThrow(() -> new NotFoundException("Event with id " + id + " not found"));
+
+        event.setName(request.name());
+        event.setDescription(request.description());
+        event.setEventDate(request.eventDate());
+        event.setPrice(request.price());
+
+        eventRepository.save(event);
+
+        return event.getId().toString();
+    }
+
+    public String deleteEventById(String id) {
+        UUID uuid = UUID.fromString(id);
+
+        Event event = eventRepository.findById(uuid).orElseThrow(() -> new NotFoundException("Event with id " + id + " not found"));
+
+        event.setDeletedAt(LocalDateTime.now());
+
+        return event.getId().toString();
     }
 }
