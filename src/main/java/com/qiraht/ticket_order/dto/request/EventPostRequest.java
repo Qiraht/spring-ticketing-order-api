@@ -5,10 +5,13 @@ import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public record EventRequest(
+public record EventPostRequest(
         @NotBlank String name,
 
         String description,
+
+        @NotBlank
+        String location,
 
         @NotNull
         @Future

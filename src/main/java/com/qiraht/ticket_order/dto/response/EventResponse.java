@@ -7,9 +7,10 @@ public record EventResponse(
         String id,
         String name,
         String description,
+        String location,
         LocalDateTime eventDate,
         BigDecimal price,
         Integer capacity,
-        Integer available
+        Integer availableSlot
 ) {
 }
