@@ -2,6 +2,7 @@ package com.qiraht.ticket_order.handler;
 
 import com.qiraht.ticket_order.dto.ApiResponse;
 import com.qiraht.ticket_order.exception.NotFoundException;
+import com.qiraht.ticket_order.exception.ValidationException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
     // Not Found Error
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ApiResponse<?>> handleNotFoundException(NotFoundException ex, HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<?>> handleBusinessException(NotFoundException ex, HttpServletRequest request) {
         log.error("error while processing request", ex);
 
         ApiResponse<?> body = ApiResponse.error(HttpStatus.NOT_FOUND.value(), ex.getMessage(), null);
@@ -40,6 +41,17 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest().body(body);
     }
+
+    // Manual Validation Error
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ApiResponse<?>> handleBusinessException(ValidationException ex, HttpServletRequest request) {
+        log.error("error while processing request", ex);
+
+        ApiResponse<?> body = ApiResponse.error(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), null);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(body);
+    }
+
 
     // Server Error
     @ExceptionHandler(Exception.class)
