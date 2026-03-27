@@ -44,6 +44,10 @@ public class Event {
     @Column(name = "available_slot",nullable = false)
     private Integer availableSlot;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Column(name = "created_at", nullable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;

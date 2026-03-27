@@ -35,6 +35,10 @@ public class Ticket {
     @Column(nullable = false)
     private Integer quantity;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private TicketStatus status = TicketStatus.BOOKED;
