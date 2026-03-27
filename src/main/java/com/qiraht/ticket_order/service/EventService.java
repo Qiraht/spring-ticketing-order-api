@@ -1,9 +1,12 @@
 package com.qiraht.ticket_order.service;
 
+import com.qiraht.ticket_order.constant.EventStatus;
+import com.qiraht.ticket_order.constant.UserRole;
 import com.qiraht.ticket_order.dto.request.EventPostRequest;
 import com.qiraht.ticket_order.dto.request.EventPutRequest;
 import com.qiraht.ticket_order.dto.response.EventResponse;
 import com.qiraht.ticket_order.entity.Event;
+import com.qiraht.ticket_order.entity.User;
 import com.qiraht.ticket_order.exception.NotFoundException;
 import com.qiraht.ticket_order.exception.ValidationException;
 import com.qiraht.ticket_order.repository.EventRepository;
@@ -12,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,12 +23,16 @@ import java.util.UUID;
 @Slf4j
 public class EventService {
     private final EventRepository eventRepository;
+    private final UserService userService;
 
-    public EventService(EventRepository eventRepository) {
+    public EventService(EventRepository eventRepository, UserService userService) {
         this.eventRepository = eventRepository;
+        this.userService = userService;
     }
 
     public String createEvent(EventPostRequest request) {
+        User user = userService.getCurrentUser();
+
         Event event = Event.builder()
                 .name(request.name())
                 .description(request.description())
@@ -33,6 +41,8 @@ public class EventService {
                 .eventDate(request.eventDate())
                 .capacity(request.capacity())
                 .availableSlot(request.capacity())
+                .status(EventStatus.ACTIVE)
+                .user(user)
                 .build();
 
         log.info("Event created: {}", event.getId());
@@ -43,7 +53,16 @@ public class EventService {
     }
 
     public List<EventResponse> getAllEvents() {
-        List<Event> events = eventRepository.findAll();
+        User user = userService.getCurrentUser();
+
+        List<Event> events = new ArrayList<>();
+
+        // admin only allowed to get non deleted
+        if (user.getRole() == UserRole.ADMIN) {
+            events = eventRepository.findAll();
+        } else {
+            events = eventRepository.findAllByDeletedAtNull();
+        }
 
         log.info("Found {} events", events.size());
 
@@ -56,14 +75,22 @@ public class EventService {
                         event.getEventDate(),
                         event.getPrice(),
                         event.getCapacity(),
-                        event.getAvailableSlot()
+                        event.getAvailableSlot(),
+                        event.getStatus(),
+                        userService.formatUser(event.getUser())
                 )).toList();
     }
 
     public EventResponse getEventById(String id) {
         UUID uuid = UUID.fromString(id);
 
+        User user = userService.getCurrentUser();
+
         Event event = eventRepository.findById(uuid).orElseThrow(() -> new NotFoundException("Event with id " + id + " not found"));
+
+        if (user.getRole() != UserRole.ADMIN && event.getDeletedAt() != null) {
+            throw new ValidationException("Event with id " + id + " has been deleted");
+        }
 
         log.info("Event found: {}", event.getId());
 
@@ -75,7 +102,9 @@ public class EventService {
                 event.getEventDate(),
                 event.getPrice(),
                 event.getCapacity(),
-                event.getAvailableSlot()
+                event.getAvailableSlot(),
+                event.getStatus(),
+                userService.formatUser(event.getUser())
         );
     }
 
@@ -83,6 +112,11 @@ public class EventService {
         UUID uuid = UUID.fromString(id);
 
         Event event = eventRepository.findById(uuid).orElseThrow(() -> new NotFoundException("Event with id " + id + " not found"));
+
+        // check event status
+        if (event.getStatus() == EventStatus.FINISHED) {
+            throw new ValidationException("Event with id " + id + " has been finished, cannot be edited");
+        }
 
         event.setName(request.name());
         event.setDescription(request.description());
@@ -128,6 +162,11 @@ public class EventService {
             throw new ValidationException("Event is expired " + event.getId());
         }
 
+        // check event status
+        if (event.getStatus() == EventStatus.FINISHED) {
+            throw new ValidationException("Event is finished " + event.getId());
+        }
+
         int remainingSlot = event.getAvailableSlot() - quantity;
 
         event.setAvailableSlot(remainingSlot);
@@ -137,5 +176,20 @@ public class EventService {
         log.info("Event sold for {} of {} remaining", event.getId(), remainingSlot);
 
         return event;
+    }
+
+    @Transactional
+    public void returnCancelledTicketSlot(UUID id, Integer quantity) {
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Event with id " + id + " not found"));
+
+        // check event status
+        if (event.getStatus() == EventStatus.FINISHED) {
+            throw new ValidationException("Event is ongoing/finished " + event.getId());
+        }
+
+        event.setAvailableSlot(event.getAvailableSlot() + quantity);
+
+        eventRepository.save(event);
     }
 }
