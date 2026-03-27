@@ -17,7 +17,8 @@ public record EventPostRequest(
         @Future
         LocalDateTime eventDate,
 
-        @NotBlank @DecimalMin(value = "0.01")
+        @NotNull
+        @DecimalMin(value = "0.01")
         BigDecimal price,
 
         @NotNull
