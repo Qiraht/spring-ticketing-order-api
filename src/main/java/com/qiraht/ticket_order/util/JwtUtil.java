@@ -10,7 +10,7 @@ import java.util.Date;
 
 @Component
 public class JwtUtil {
-    @Value("${app.jwt.secret")
+    @Value("${app.jwt.secret}")
     private String secret;
 
     @Value("${app.jwt.expiration}")
@@ -42,11 +42,15 @@ public class JwtUtil {
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
-        String username = userDetails.getUsername();
-        Date expiresAt = JWT.require(algorithm())
-                .build()
-                .verify(token).getExpiresAt();
+        try {
+            var decoded = JWT.require(algorithm()).build().verify(token);
+            String usernameFromToken = decoded.getSubject();
+            Date expiresAt = decoded.getExpiresAt();
 
-        return username.equals(userDetails.getUsername()) && expiresAt.after(new Date());
+            return usernameFromToken.equals(userDetails.getUsername())
+                    && expiresAt.after(new Date());
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
