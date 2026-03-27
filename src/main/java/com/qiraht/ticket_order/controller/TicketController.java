@@ -29,7 +29,7 @@ public class TicketController {
     public ResponseEntity<ApiResponse<String>> postTicket(@RequestBody TicketRequest request) {
         String data = ticketService.bookTicket(request);
 
-        ApiResponse<String> body = ApiResponse.success(HttpStatus.OK.value(), "Ticket successfully booked", data);
+        ApiResponse<String> body = ApiResponse.success(HttpStatus.OK.value(), "ticket successfully booked", data);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(body);
     }
@@ -43,11 +43,20 @@ public class TicketController {
         return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<TicketResponse>>  getTicketById(@Valid @NotBlank String id) {
-        TicketResponse data = ticketService.getTicketById(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<TicketResponse>>  getTicketById(@Valid @NotBlank @PathVariable("id") String ticketId) {
+        TicketResponse data = ticketService.getTicketById(ticketId);
 
         ApiResponse<TicketResponse>  body = ApiResponse.success(HttpStatus.OK.value(), "success", data);
+
+        return ResponseEntity.status(HttpStatus.OK).body(body);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> patchTicketByID(@Valid @NotBlank @PathVariable("id") String ticketId) {
+        String data = ticketService.cancelBookedTicket(ticketId);
+
+        ApiResponse<String> body = ApiResponse.success(HttpStatus.OK.value(), "ticket cancelled successfully", data);
 
         return ResponseEntity.status(HttpStatus.OK).body(body);
     }
