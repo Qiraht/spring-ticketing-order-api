@@ -1,6 +1,7 @@
 package com.qiraht.ticket_order.handler;
 
 import com.qiraht.ticket_order.dto.ApiResponse;
+import com.qiraht.ticket_order.exception.AccessDeniedException;
 import com.qiraht.ticket_order.exception.NotFoundException;
 import com.qiraht.ticket_order.exception.ValidationException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -87,6 +88,21 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+    }
+
+    // AccessDeniedHandler
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiResponse<?>> handleBusinessException(
+            AccessDeniedException ex,
+            HttpServletRequest request
+    ) {
+        ApiResponse<?> body = ApiResponse.error(
+                HttpStatus.FORBIDDEN.value(),
+                ex.getMessage(),
+                null
+        );
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
     }
 
     // Server Error
