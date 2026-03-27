@@ -1,5 +1,5 @@
 --liquibase formatted sql
---changeset author:Thariq Aulia Akbar
+--changeset id:1 author:Qiraht
 --comment: first event table version
 
 CREATE  TABLE IF NOT EXISTS events (
