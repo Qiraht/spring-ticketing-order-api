@@ -29,35 +29,43 @@ public class TicketController {
     public ResponseEntity<ApiResponse<String>> postTicket(@RequestBody TicketRequest request) {
         String data = ticketService.bookTicket(request);
 
-        ApiResponse<String> body = ApiResponse.success(HttpStatus.OK.value(), "ticket successfully booked", data);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(body);
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                ApiResponse.success(
+                        HttpStatus.OK.value(),
+                        "ticket successfully booked",
+                        data));
     }
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<TicketResponse>>>  getTickets() {
         List<TicketResponse> data = ticketService.getAllTickets();
 
-        ApiResponse<List<TicketResponse>>  body = ApiResponse.success(HttpStatus.OK.value(), "success", data);
-
-        return ResponseEntity.status(HttpStatus.OK).body(body);
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        HttpStatus.OK.value(),
+                        "success",
+                        data));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<TicketResponse>>  getTicketById(@Valid @NotBlank @PathVariable("id") String ticketId) {
         TicketResponse data = ticketService.getTicketById(ticketId);
 
-        ApiResponse<TicketResponse>  body = ApiResponse.success(HttpStatus.OK.value(), "success", data);
-
-        return ResponseEntity.status(HttpStatus.OK).body(body);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                ApiResponse.success(
+                        HttpStatus.OK.value(),
+                        "success",
+                        data));
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse<String>> patchTicketByID(@Valid @NotBlank @PathVariable("id") String ticketId) {
         String data = ticketService.cancelBookedTicket(ticketId);
 
-        ApiResponse<String> body = ApiResponse.success(HttpStatus.OK.value(), "ticket cancelled successfully", data);
-
-        return ResponseEntity.status(HttpStatus.OK).body(body);
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                ApiResponse.success(
+                        HttpStatus.CREATED.value(),
+                        "ticket cancelled successfully",
+                        data));
     }
 }

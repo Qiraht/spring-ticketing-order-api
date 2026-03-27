@@ -30,40 +30,54 @@ public class EventController {
     public ResponseEntity<ApiResponse<String>> postEvent(@RequestBody EventPostRequest request) {
         String data = eventService.createEvent(request);
 
-        ApiResponse<String> body = ApiResponse.success(
-                HttpStatus.CREATED.value(),
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                ApiResponse.success(
+                        HttpStatus.CREATED.value(),
                 "Event created successfully",
-                data
-        );
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(body);
+                        data));
     }
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<EventResponse>>> getEvents() {
         List<EventResponse> data = eventService.getAllEvents();
 
-        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK.value(), "success", data));
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        HttpStatus.OK.value(),
+                "success",
+                        data));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<EventResponse>> getEventById(@PathVariable("id") String eventId) {
         EventResponse data = eventService.getEventById(eventId);
 
-        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK.value(), "success", data));
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        HttpStatus.OK.value(),
+                        "success",
+                        data));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<String>> updateEvent(@PathVariable("id") String eventId, @RequestBody EventPutRequest request) {
         String data = eventService.editEventById(eventId, request);
 
-        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK.value(), "success", data));
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                ApiResponse.success(
+                        HttpStatus.CREATED.value(),
+                        "Event edited successfully",
+                        data));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<String>> deleteEvent(@PathVariable("id") String eventId) {
         String data = eventService.deleteEventById(eventId);
 
-        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK.value(), "success", data));
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        HttpStatus.OK.value(),
+                "Event deleted successfully",
+                        data));
     }
 }
