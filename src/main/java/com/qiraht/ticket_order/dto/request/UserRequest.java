@@ -10,9 +10,11 @@ public record UserRequest(
         String email,
 
         @NotBlank
+        @Size(min = 2, max = 16)
         String first_name,
 
         @NotBlank
+        @Size(min = 2, max = 16)
         String last_name,
 
         @NotBlank
