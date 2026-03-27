@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
@@ -18,6 +19,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLRestriction("deleted_at IS NULL")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -27,10 +29,10 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Column(nullable = false)
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
     @Column(nullable = false)
