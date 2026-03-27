@@ -4,10 +4,13 @@ import com.qiraht.ticket_order.dto.ApiResponse;
 import com.qiraht.ticket_order.exception.NotFoundException;
 import com.qiraht.ticket_order.exception.ValidationException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -52,6 +55,39 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(body);
     }
 
+    // path/query params validation exception
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiResponse<?>> handleBusinessException(
+            ConstraintViolationException ex,
+            HttpServletRequest request) {
+
+        String message = ex.getConstraintViolations().stream()
+                .findFirst()
+                .map(ConstraintViolation::getMessage)
+                .orElse("Validation failed");
+
+        ApiResponse<?> body = ApiResponse.error(
+                HttpStatus.BAD_REQUEST.value(),
+                message,
+                null
+        );
+        return ResponseEntity.badRequest().body(body);
+    }
+
+    // Bad Credentials error
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ApiResponse<?>> handleBusinessException(
+            AuthenticationException ex,
+            HttpServletRequest request) {
+
+        ApiResponse<?> body = ApiResponse.error(
+                HttpStatus.UNAUTHORIZED.value(),
+                "Authentication failed/Invalid credentials",
+                null
+        );
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+    }
 
     // Server Error
     @ExceptionHandler(Exception.class)
