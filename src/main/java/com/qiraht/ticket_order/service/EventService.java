@@ -6,6 +6,8 @@ import com.qiraht.ticket_order.dto.response.EventResponse;
 import com.qiraht.ticket_order.entity.Event;
 import com.qiraht.ticket_order.exception.NotFoundException;
 import com.qiraht.ticket_order.repository.EventRepository;
+import jakarta.transaction.Transactional;
+import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -101,5 +103,39 @@ public class EventService {
         event.setDeletedAt(LocalDateTime.now());
 
         return event.getId().toString();
+    }
+
+    @Transactional
+    public Event eventTicketSales(String id, Integer quantity) {
+        UUID uuid = UUID.fromString(id);
+
+        // Get event or throw error
+        Event event = eventRepository.findById(uuid)
+                .orElseThrow(() -> new NotFoundException("Event with id " + id + " not found"));
+
+        // check available slot
+        if (event.getAvailableSlot() < quantity) {
+            throw new ValidationException("Not enough tickets available. Available: " + event.getAvailableSlot());
+        }
+
+        // check event active from is DeletedAt
+        if (event.getDeletedAt() != null) {
+            throw new ValidationException("Event is not available " + event.getId());
+        }
+
+        // check event active from eventDate
+        if (event.getEventDate().isBefore(LocalDateTime.now())) {
+            throw new ValidationException("Event is expired " + event.getId());
+        }
+
+        int remainingSlot = event.getAvailableSlot() - quantity;
+
+        event.setAvailableSlot(remainingSlot);
+
+        eventRepository.save(event);
+
+        log.info("Event sold for {} of {} remaining", event.getId(), remainingSlot);
+
+        return event;
     }
 }
