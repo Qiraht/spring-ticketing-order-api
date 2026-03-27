@@ -7,6 +7,7 @@ import com.qiraht.ticket_order.dto.response.EventResponse;
 import com.qiraht.ticket_order.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,7 +30,7 @@ public class EventController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Create Event", description = "Create new Event. Authentication Needed and role 'ADMIN'")
-    public ResponseEntity<ApiResponse<String>> postEvent(@RequestBody EventPostRequest request) {
+    public ResponseEntity<ApiResponse<String>> postEvent(@Valid @RequestBody EventPostRequest request) {
         String data = eventService.createEvent(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
@@ -63,7 +64,7 @@ public class EventController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<String>> updateEvent(@PathVariable("id") String eventId, @RequestBody EventPutRequest request) {
+    public ResponseEntity<ApiResponse<String>> updateEvent(@PathVariable("id") String eventId,@Valid @RequestBody EventPutRequest request) {
         String data = eventService.editEventById(eventId, request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
