@@ -7,6 +7,7 @@ import com.qiraht.ticket_order.dto.response.TicketResponse;
 import com.qiraht.ticket_order.entity.Event;
 import com.qiraht.ticket_order.entity.Ticket;
 import com.qiraht.ticket_order.exception.NotFoundException;
+import com.qiraht.ticket_order.exception.ValidationException;
 import com.qiraht.ticket_order.repository.TicketRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -88,5 +89,24 @@ public class TicketService {
                 ticket.getQuantity(),
                 ticket.getStatus()
         );
+    }
+
+    public String cancelBookedTicket(String id) {
+        UUID ticketId = UUID.fromString(id);
+
+        // get Ticket or throw error
+        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(() -> new NotFoundException("Ticket " + id +" not found"));
+
+        // check ticket status
+        if (ticket.getStatus().equals(TicketStatus.CANCELLED)) {
+            throw new ValidationException("Ticket " + id + " is already cancelled");
+        }
+
+        ticket.setStatus(TicketStatus.CANCELLED);
+
+        ticketRepository.save(ticket);
+
+        log.info("Ticket {} for event {} cancelled", ticket.getId(), ticket.getEvent().getId());
+        return ticket.getId().toString();
     }
 }
