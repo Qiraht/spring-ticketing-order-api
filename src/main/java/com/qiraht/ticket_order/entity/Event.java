@@ -1,5 +1,6 @@
 package com.qiraht.ticket_order.entity;
 
+import com.qiraht.ticket_order.constant.EventStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -43,6 +44,12 @@ public class Event {
 
     @Column(name = "available_slot",nullable = false)
     private Integer availableSlot;
+
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private EventStatus status = EventStatus.ACTIVE;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
