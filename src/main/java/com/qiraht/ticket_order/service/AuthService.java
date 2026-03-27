@@ -2,7 +2,6 @@ package com.qiraht.ticket_order.service;
 
 import com.qiraht.ticket_order.config.CustomUserDetails;
 import com.qiraht.ticket_order.dto.request.AuthRequest;
-import com.qiraht.ticket_order.repository.UserRepository;
 import com.qiraht.ticket_order.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,12 +16,10 @@ import java.util.Objects;
 public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
-    private final UserRepository userRepository;
 
-    public AuthService(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserRepository userRepository) {
+    public AuthService(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
-        this.userRepository = userRepository;
     }
 
     public String loginUser(AuthRequest request) {
