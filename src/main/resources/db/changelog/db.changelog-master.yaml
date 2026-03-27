@@ -5,3 +5,9 @@ databaseChangeLog:
       file: db/changelog/scripts/create_tickets_table.sql
   - include:
       file: db/changelog/scripts/create_users_table.sql
+  - include:
+      file: db/changelog/scripts/add_user_id_column_to_events_table.sql
+  - include:
+      file: db/changelog/scripts/add_user_id_column_to_tickets_table.sql
+  - include:
+      file: db/changelog/scripts/add_status_column_on_events_table.sql
