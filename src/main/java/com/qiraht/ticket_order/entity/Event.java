@@ -41,7 +41,7 @@ public class Event {
     @Column(nullable = false)
     private Integer capacity;
 
-    @Column(name = "available",nullable = false)
+    @Column(name = "available_slot",nullable = false)
     private Integer availableSlot;
 
     @Column(name = "created_at", nullable = false)
