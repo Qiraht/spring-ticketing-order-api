@@ -5,9 +5,9 @@ import com.qiraht.ticket_order.dto.request.EventPutRequest;
 import com.qiraht.ticket_order.dto.response.EventResponse;
 import com.qiraht.ticket_order.entity.Event;
 import com.qiraht.ticket_order.exception.NotFoundException;
+import com.qiraht.ticket_order.exception.ValidationException;
 import com.qiraht.ticket_order.repository.EventRepository;
 import jakarta.transaction.Transactional;
-import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
