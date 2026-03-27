@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,7 @@ public class TicketController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ApiResponse<String>> postTicket(@RequestBody TicketRequest request) {
         String data = ticketService.bookTicket(request);
 
@@ -37,6 +39,7 @@ public class TicketController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<ApiResponse<List<TicketResponse>>>  getTickets() {
         List<TicketResponse> data = ticketService.getAllTickets();
 
@@ -48,6 +51,7 @@ public class TicketController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN','USER')")
     public ResponseEntity<ApiResponse<TicketResponse>>  getTicketById(@Valid @NotBlank @PathVariable("id") String ticketId) {
         TicketResponse data = ticketService.getTicketById(ticketId);
 
@@ -59,6 +63,7 @@ public class TicketController {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER)")
     public ResponseEntity<ApiResponse<String>> patchTicketByID(@Valid @NotBlank @PathVariable("id") String ticketId) {
         String data = ticketService.cancelBookedTicket(ticketId);
 

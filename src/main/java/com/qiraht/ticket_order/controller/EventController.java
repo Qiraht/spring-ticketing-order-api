@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,7 @@ public class EventController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Create Event", description = "Create new Event. Authentication Needed and role 'ADMIN'")
     public ResponseEntity<ApiResponse<String>> postEvent(@RequestBody EventPostRequest request) {
         String data = eventService.createEvent(request);
@@ -60,6 +62,7 @@ public class EventController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<String>> updateEvent(@PathVariable("id") String eventId, @RequestBody EventPutRequest request) {
         String data = eventService.editEventById(eventId, request);
 
@@ -71,6 +74,7 @@ public class EventController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<String>> deleteEvent(@PathVariable("id") String eventId) {
         String data = eventService.deleteEventById(eventId);
 
