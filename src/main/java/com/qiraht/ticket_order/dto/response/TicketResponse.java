@@ -9,6 +9,7 @@ public record TicketResponse(
         EventResponse event,
         BigDecimal priceAtSales,
         Integer quantity,
-        TicketStatus status
+        TicketStatus status,
+        UserResponse user
 ) {
 }

@@ -1,5 +1,7 @@
 package com.qiraht.ticket_order.dto.response;
 
+import com.qiraht.ticket_order.constant.EventStatus;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -11,6 +13,8 @@ public record EventResponse(
         LocalDateTime eventDate,
         BigDecimal price,
         Integer capacity,
-        Integer availableSlot
+        Integer availableSlot,
+        EventStatus status,
+        UserResponse createdBy
 ) {
 }
