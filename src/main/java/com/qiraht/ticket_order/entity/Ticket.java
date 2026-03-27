@@ -29,7 +29,7 @@ public class Ticket {
     @JoinColumn(name = "event_id")
     private Event event;
 
-    @Column(nullable = false)
+    @Column(name = "price", nullable = false)
     private BigDecimal priceAtSales;
 
     @Column(nullable = false)
