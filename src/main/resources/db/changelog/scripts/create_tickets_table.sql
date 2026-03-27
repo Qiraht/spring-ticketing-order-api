@@ -1,6 +1,6 @@
 --liquibase formatted sql
 --changeset Qiraht:1
---comment: first event table version
+--comment: tickets table creation
 
 CREATE TABLE IF NOT EXISTS tickets (
     id VARCHAR(36) NOT NULL PRIMARY KEY DEFAULT (UUID()),
@@ -9,6 +9,6 @@ CREATE TABLE IF NOT EXISTS tickets (
     quantity INT NOT NULL,
     status ENUM('BOOKED', 'CANCELLED') NOT NULL,
     created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    updated_at TIMESTAMP(3) NOT NULL,
+    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
     FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
 );
