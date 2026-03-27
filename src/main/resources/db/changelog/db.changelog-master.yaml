@@ -1,3 +1,5 @@
 databaseChangeLog:
   - include:
       file: db/changelog/scripts/create_events_table.sql
+  - include:
+      file: db/changelog/scripts/create_tickets_table.sql
