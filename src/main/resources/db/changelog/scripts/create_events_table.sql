@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS events (
     description TEXT,
     location VARCHAR(100) NOT NULL,
     event_date DATETIME NOT NULL,
-    price NUMERIC(5,2) NOT NULL,
+    price NUMERIC(10,2) NOT NULL,
     capacity INT NOT NULL,
     available_slot INT NOT NULL,
     created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
