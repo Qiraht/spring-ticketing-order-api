@@ -29,7 +29,7 @@ public class EventController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Create Event", description = "Create new Event. Authentication Needed and role 'ADMIN'")
+    @Operation(summary = "POST Event", description = "Create new Event. Authentication Needed and only user with role 'ADMIN'")
     public ResponseEntity<ApiResponse<String>> postEvent(@Valid @RequestBody EventPostRequest request) {
         String data = eventService.createEvent(request);
 
@@ -41,6 +41,10 @@ public class EventController {
     }
 
     @GetMapping
+    @Operation(summary = "GET All Events", description = """
+            Get All Available Events for 'USER'. API needs Authentication
+            User role with 'ADMIN' can view All data and User with role 'USER' will be limited.
+            """)
     public ResponseEntity<ApiResponse<List<EventResponse>>> getEvents() {
         List<EventResponse> data = eventService.getAllEvents();
 
@@ -52,6 +56,7 @@ public class EventController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "GET Event by ID", description = "Get Event by ID. API needs Authentication")
     public ResponseEntity<ApiResponse<EventResponse>> getEventById(@PathVariable("id") String eventId) {
         EventResponse data = eventService.getEventById(eventId);
 
@@ -64,6 +69,7 @@ public class EventController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "PUT Event", description = "Edit Event By Id. API needs Authentication and Only User Role 'ADMIN'")
     public ResponseEntity<ApiResponse<String>> updateEvent(@PathVariable("id") String eventId,@Valid @RequestBody EventPutRequest request) {
         String data = eventService.editEventById(eventId, request);
 
@@ -76,6 +82,7 @@ public class EventController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "DELETE Event", description = "Delete Event by Id. Soft Delete. API needs Authentication and Only User Role 'ADMIN'")
     public ResponseEntity<ApiResponse<String>> deleteEvent(@PathVariable("id") String eventId) {
         String data = eventService.deleteEventById(eventId);
 

@@ -3,6 +3,8 @@ package com.qiraht.ticket_order.controller;
 import com.qiraht.ticket_order.dto.ApiResponse;
 import com.qiraht.ticket_order.dto.request.AuthRequest;
 import com.qiraht.ticket_order.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/login")
+@Tag(name = "Authentication", description = "Endpoint used for Authentication")
 @Validated
 public class AuthController {
     private final AuthService authService;
@@ -23,6 +26,7 @@ public class AuthController {
     }
 
     @PostMapping
+    @Operation(summary = "Authenticate User", description = "Endpoint used to Authenticate User. Public API Endpoint")
     public ResponseEntity<ApiResponse<String>> postLogin(@Valid @RequestBody AuthRequest request) {
         String data = authService.loginUser(request);
 

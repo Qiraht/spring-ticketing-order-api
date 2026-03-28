@@ -4,6 +4,7 @@ import com.qiraht.ticket_order.dto.ApiResponse;
 import com.qiraht.ticket_order.dto.request.TicketRequest;
 import com.qiraht.ticket_order.dto.response.TicketResponse;
 import com.qiraht.ticket_order.service.TicketService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -28,6 +29,7 @@ public class TicketController {
 
     @PostMapping
     @PreAuthorize("hasRole('USER')")
+    @Operation(summary = "POST tickets", description = "Book new event tickets. API needs Authentication and Only user role 'USER'")
     public ResponseEntity<ApiResponse<String>> postTicket(@Valid @RequestBody TicketRequest request) {
         String data = ticketService.bookTicket(request);
 
@@ -40,6 +42,10 @@ public class TicketController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @Operation(summary = "GET tickets", description = """
+    Get All Tickets. API needs Authentication.
+    User with role 'USER' only allowed to access its own tickets
+    """)
     public ResponseEntity<ApiResponse<List<TicketResponse>>>  getTickets() {
         List<TicketResponse> data = ticketService.getAllTickets();
 
@@ -52,6 +58,10 @@ public class TicketController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @Operation(summary = "GET Ticket By Id", description = """
+    Get Ticket by Id. API needs Authentication.
+    User with role 'USER' only allowed to access its own tickets
+    """)
     public ResponseEntity<ApiResponse<TicketResponse>>  getTicketById(@NotBlank @PathVariable("id") String ticketId) {
         TicketResponse data = ticketService.getTicketById(ticketId);
 
@@ -64,6 +74,10 @@ public class TicketController {
 
     @PatchMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @Operation(summary = "PATCH Ticket by Id", description = """
+    Cancel Booked Ticket. API Needs Authentication.
+    User with role 'USER' only allowed to access its own tickets
+    """)
     public ResponseEntity<ApiResponse<String>> patchTicketByID(@NotBlank @PathVariable("id") String ticketId) {
         String data = ticketService.cancelBookedTicket(ticketId);
 
