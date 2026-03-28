@@ -21,7 +21,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: '21'
-          distribution: 'bellsoft'
+          distribution: 'liberica'
 
       # Build with Maven
       - name: Build application with maven
