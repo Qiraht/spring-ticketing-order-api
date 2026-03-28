@@ -5,6 +5,7 @@ import com.qiraht.ticket_order.handler.UnAuthenticationHandler;
 import com.qiraht.ticket_order.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -60,6 +61,7 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html",
                                 "/swagger-ui/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/events", "/events/**").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(ex ->
                         ex.accessDeniedHandler(customAccessDeniedHandler)
