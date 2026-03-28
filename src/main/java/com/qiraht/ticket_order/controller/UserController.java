@@ -3,6 +3,7 @@ package com.qiraht.ticket_order.controller;
 import com.qiraht.ticket_order.dto.ApiResponse;
 import com.qiraht.ticket_order.dto.request.UserRequest;
 import com.qiraht.ticket_order.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -23,7 +24,7 @@ public class UserController {
 
 
     @PostMapping
-    public ResponseEntity<ApiResponse<String>> postRegister(@RequestBody UserRequest request) {
+    public ResponseEntity<ApiResponse<String>> postRegister(@Valid @RequestBody UserRequest request) {
         String data =  userService.registerUser(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(

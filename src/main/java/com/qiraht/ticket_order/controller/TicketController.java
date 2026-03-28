@@ -28,7 +28,7 @@ public class TicketController {
 
     @PostMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<ApiResponse<String>> postTicket(@RequestBody TicketRequest request) {
+    public ResponseEntity<ApiResponse<String>> postTicket(@Valid @RequestBody TicketRequest request) {
         String data = ticketService.bookTicket(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
@@ -51,8 +51,8 @@ public class TicketController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN','USER')")
-    public ResponseEntity<ApiResponse<TicketResponse>>  getTicketById(@Valid @NotBlank @PathVariable("id") String ticketId) {
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    public ResponseEntity<ApiResponse<TicketResponse>>  getTicketById(@NotBlank @PathVariable("id") String ticketId) {
         TicketResponse data = ticketService.getTicketById(ticketId);
 
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -63,8 +63,8 @@ public class TicketController {
     }
 
     @PatchMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER)")
-    public ResponseEntity<ApiResponse<String>> patchTicketByID(@Valid @NotBlank @PathVariable("id") String ticketId) {
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<ApiResponse<String>> patchTicketByID(@NotBlank @PathVariable("id") String ticketId) {
         String data = ticketService.cancelBookedTicket(ticketId);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
